@@ -23,6 +23,26 @@ Mobilapplikationen er udviklet i Flutter med fokus på streng state management.
 * **BLoC (Business Logic Component):** Styrer logikken og tilstanden i UI'en via Streams (Events ind -> States ud).
 * **Provider:** Bruges til Dependency Injection igennem widget-træet.
 
+## Password Generering (OWASP & NIST Compliance)
+
+En af kernefunktionerne er generering af sikre kodeord. Implementationen følger retningslinjer fra OWASP og NIST for at sikre høj entropi og kompleksitet.
+
+Logikken findes i `GenerateSecureKeyService.cs` og overholder følgende:
+
+* **Kryptografisk Sikkerhed (CSPRNG):**
+  Vi benytter `System.Security.Cryptography.RandomNumberGenerator` i stedet for standard `Random` klassen. Dette sikrer, at tallene er kryptografisk sikre og ikke kan forudsiges.
+* **Kompleksitetskrav:**
+  Algoritmen tvinger inklusion af karakterer fra fire forskellige sæt for at maksimere styrken:
+  1. Store bogstaver (A-Z)
+  2. Små bogstaver (a-z)
+  3. Tal (0-9)
+  4. Specialtegn (`!@#$%^&*...`)
+  
+  Koden genererer først en tilfældig streng og overskriver derefter specifikt tilfældige positioner med mindst én karakter fra hver kategori for at garantere overholdelse af kravene.
+* **Længdebegrænsninger:**
+  * **Min. 8 tegn:** Håndhæves for at overholde NIST minimumskrav.
+  * **Maks. 128 tegn:** Sat for at beskytte systemet mod performance-problemer og potentielle angreb, hvor ekstremt lange strenge kunne udnyttes.
+
 ## Sikkerhedsanalyse & Roadmap
 
 Som en del af projektet har vi arbejdet med kryptografi og analyseret forskellige krypteringstilstande (Modes of Operation).
